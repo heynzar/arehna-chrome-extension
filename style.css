@@ -1,6 +1,6 @@
 * {
   box-sizing: border-box;
-  font-family: "Times New Roman", Times, serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   padding: 0;
   margin: 0;
   user-select: none;
@@ -15,11 +15,103 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  border: 5px solid red;
+  position: relative;
 }
 
 main {
   width: 100%;
   padding: 0px 40px;
+}
+
+section {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  inset: 0;
+  background-color: hsla(0, 0%, 0%, 0.5);
+  backdrop-filter: blur(2px);
+  z-index: 10;
+}
+
+.flex-row-between {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.button-secondary {
+  height: 28px;
+  width: 28px;
+  background-color: #18181b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.button-secondary:hover {
+  background-color: #2a2a2a;
+}
+
+.volume-btn {
+  border: none;
+  background-color: transparent;
+  color: white;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.volume-btn:hover {
+  color: #c7c7c7;
+}
+
+#quran-buttons {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.quran-button {
+  height: 36px;
+  width: 96px;
+  background-color: #18181b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.quran-button:hover {
+  background-color: #2a2a2a;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  border-radius: 6px;
+}
+
+.bg-zinc-800 {
+  background-color: #18181b;
 }
 
 #time-date {
@@ -34,6 +126,17 @@ main {
   border: 4px solid rgba(255, 255, 255, 0.2);
   border-radius: 30px;
   margin-bottom: 16px;
+}
+
+#app-settings h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+#app-settings h3 {
+  font-size: 1rem;
+  font-weight: 400;
+  opacity: 0.8;
 }
 
 #date {
@@ -140,6 +243,23 @@ footer {
 
 #info:hover {
   background-color: rgba(255, 255, 255, 0.2);
+}
+
+.main-dialog {
+  background: #09090b;
+  border: 1px solid white;
+  width: 80%;
+  padding: 20px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.hidden {
+  display: none;
 }
 
 @media (max-width: 500px) {
