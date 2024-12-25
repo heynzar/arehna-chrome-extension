@@ -1,3 +1,85 @@
+const quran = [
+  {
+    name: "سورة البقرة",
+    src: "https://server6.mp3quran.net/qtm/002.mp3",
+  },
+  {
+    name: "سورة الملك",
+    src: "https://server6.mp3quran.net/qtm/067.mp3",
+  },
+  {
+    name: "سورة يوسف",
+    src: "https://server6.mp3quran.net/qtm/012.mp3",
+  },
+  {
+    name: "سورة النساء",
+    src: "https://server6.mp3quran.net/qtm/004.mp3",
+  },
+  {
+    name: "سورة الكهف",
+    src: "https://server6.mp3quran.net/qtm/018.mp3",
+  },
+  {
+    name: "سورة الصافات",
+    src: "https://server6.mp3quran.net/qtm/037.mp3",
+  },
+  {
+    name: "سورة الرحمن",
+    src: "https://server6.mp3quran.net/qtm/055.mp3",
+  },
+  {
+    name: "سورة  الواقعة",
+    src: "https://server6.mp3quran.net/qtm/056.mp3",
+  },
+  {
+    name: "سورة  يس",
+    src: "https://server6.mp3quran.net/qtm/036.mp3",
+  },
+];
+
+const sounds = [
+  {
+    icon: "bird-icon",
+    src: "https://upbase.io/_assets/pomoup/1_Birds.mp3",
+  },
+  {
+    icon: "coffee-icon",
+    src: "https://upbase.io/_assets/pomoup/4_Coffee_Shop.mp3",
+  },
+  {
+    icon: "rain-icon",
+    src: "https://upbase.io/_assets/pomoup/2_Rain.mp3",
+  },
+  {
+    icon: "lightning-icon",
+    src: "https://upbase.io/_assets/pomoup/3_Thunder.mp3",
+  },
+  {
+    icon: "dam-icon",
+    src: "/audios/waterfall2.mp3",
+  },
+  {
+    icon: "droplets-icon",
+    src: "/audios/drops.mp3",
+  },
+  {
+    icon: "flame-icon",
+    src: "https://upbase.io/_assets/pomoup/6_Fire.mp3",
+  },
+  {
+    icon: "waves-icon",
+    src: "https://upbase.io/_assets/pomoup/8_Ocean_Waves.mp3",
+  },
+  {
+    icon: "wind-icon",
+    src: "/audios/wind2.mp3",
+  },
+  {
+    icon: "moon-icon",
+    src: "/audios/night2.mp3",
+  },
+];
+
 //subSections
 const quranButtons = document.getElementById("quran-buttons");
 
@@ -59,45 +141,6 @@ Object.values(sectionMapping).forEach(({ button, section, close }) => {
     closeElement.addEventListener("click", () => hideSection(section));
   }
 });
-
-const quran = [
-  {
-    name: "سورة البقرة",
-    src: "https://server6.mp3quran.net/qtm/112.mp3",
-  },
-  {
-    name: "سورة الملك",
-    src: "https://server6.mp3quran.net/qtm/067.mp3",
-  },
-  {
-    name: "سورة يوسف",
-    src: "https://server6.mp3quran.net/qtm/012.mp3",
-  },
-  {
-    name: "سورة النساء",
-    src: "https://server6.mp3quran.net/qtm/004.mp3",
-  },
-  {
-    name: "سورة الكهف",
-    src: "https://server6.mp3quran.net/qtm/018.mp3",
-  },
-  {
-    name: "سورة الصافات",
-    src: "https://server6.mp3quran.net/qtm/037.mp3",
-  },
-  {
-    name: "سورة الرحمن",
-    src: "https://server6.mp3quran.net/qtm/055.mp3",
-  },
-  {
-    name: "سورة الإخلاص",
-    src: "https://server6.mp3quran.net/qtm/112.mp3",
-  },
-  {
-    name: "سورة الكوثر",
-    src: "https://server6.mp3quran.net/qtm/108.mp3",
-  },
-];
 
 function updateTime() {
   const now = new Date();

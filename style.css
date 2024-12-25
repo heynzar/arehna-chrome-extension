@@ -271,3 +271,45 @@ footer {
     font-size: 1.5rem;
   }
 }
+
+/* svg */
+
+.bird-icon {
+  background-image: url("./assets/icons/svgs/bird.svg");
+}
+
+.coffee-icon {
+  background-image: url("./assets/icons/svgs/coffee.svg");
+}
+
+.rain-icon {
+  background-image: url("./assets/icons/svgs/cloud-drizzle.svg");
+}
+
+.lightning-icon {
+  background-image: url("./assets/icons/svgs/cloud-lightning.svg");
+}
+
+.dam-icon {
+  background-image: url("./assets/icons/svgs/dam.svg");
+}
+
+.droplets-icon {
+  background-image: url("./assets/icons/svgs/droplets.svg");
+}
+
+.flame-icon {
+  background-image: url("./assets/icons/svgs/flame.svg");
+}
+
+.waves-icon {
+  background-image: url("./assets/icons/svgs/waves.svg");
+}
+
+.wind-icon {
+  background-image: url("./assets/icons/svgs/wind.svg");
+}
+
+.moon-icon {
+  background-image: url("./assets/icons/svgs/moon-star.svg");
+}
