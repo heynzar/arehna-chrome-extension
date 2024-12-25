@@ -29,8 +29,15 @@
       <main class="main-dialog">
         <header class="flex-row-between">
           <div class="flex-row bg-zinc-800">
-            <button id="volume-quran" class="volume-btn">🔊</button>
-            <input type="range" name="" id="volume-range-quran" />
+            <span id="volume-quran">🔊</span>
+            <input
+              type="range"
+              name=""
+              id="volume-range-quran"
+              min="0"
+              max="10"
+              step="1"
+            />
           </div>
           <button id="x-quran" class="button-secondary">✖</button>
         </header>
@@ -43,8 +50,15 @@
       <main class="main-dialog">
         <header class="flex-row-between">
           <div class="flex-row bg-zinc-800">
-            <button id="volume-sounds" class="volume-btn">🔊</button>
-            <input type="range" name="" id="volume-range-sounds" />
+            <span id="volume-sounds">🔊</span>
+            <input
+              type="range"
+              name=""
+              id="volume-range-sounds"
+              min="0"
+              max="10"
+              step="1"
+            />
           </div>
           <button id="x-sounds" class="button-secondary">✖</button>
         </header>

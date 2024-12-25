@@ -5,28 +5,8 @@ const quranButtons = document.getElementById("quran-buttons");
 const timeElement = document.getElementById("time");
 const dateElement = document.getElementById("date");
 
-// Toggle Volume Buttons
-const volumeBtnQuran = document.getElementById("volume-quran");
-const volumeBtnSounds = document.getElementById("volume-sounds");
 const volumeRangeQuran = document.getElementById("volume-range-quran");
 const volumeRangeSounds = document.getElementById("volume-range-sounds");
-
-function toggleVolume(volumeBtn, volumeRange) {
-  if (volumeRange.value === "0") {
-    volumeRange.value = volumeRange.max;
-    volumeBtn.textContent = "🔊";
-  } else {
-    volumeRange.value = "0";
-    volumeBtn.textContent = "🔈";
-  }
-}
-
-volumeBtnQuran.addEventListener("click", () =>
-  toggleVolume(volumeBtnQuran, volumeRangeQuran)
-);
-volumeBtnSounds.addEventListener("click", () =>
-  toggleVolume(volumeBtnSounds, volumeRangeSounds)
-);
 
 document.addEventListener("DOMContentLoaded", () => {
   setInterval(updateTime, 1000);
@@ -83,7 +63,7 @@ Object.values(sectionMapping).forEach(({ button, section, close }) => {
 const quran = [
   {
     name: "سورة البقرة",
-    src: "https://server6.mp3quran.net/qtm/002.mp3",
+    src: "https://server6.mp3quran.net/qtm/112.mp3",
   },
   {
     name: "سورة الملك",
@@ -110,12 +90,12 @@ const quran = [
     src: "https://server6.mp3quran.net/qtm/055.mp3",
   },
   {
-    name: "سورة  الواقعة",
-    src: "https://server6.mp3quran.net/qtm/056.mp3",
+    name: "سورة الإخلاص",
+    src: "https://server6.mp3quran.net/qtm/112.mp3",
   },
   {
-    name: "سورة  يس",
-    src: "https://server6.mp3quran.net/qtm/036.mp3",
+    name: "سورة الكوثر",
+    src: "https://server6.mp3quran.net/qtm/108.mp3",
   },
 ];
 
@@ -153,9 +133,20 @@ function updateTimer() {
   }, 1000);
 }
 
-function createAudioButtons(quranData, quranButtonsElement) {
+function createAudioButtons(
+  quranData,
+  quranButtonsElement,
+  isRepeating = true
+) {
   let currentAudio = null; // To track the currently playing audio
   let currentIndex = -1; // To track the index of the currently playing audio
+
+  // Initialize volume control
+  volumeRangeQuran.addEventListener("input", () => {
+    if (currentAudio) {
+      currentAudio.volume = volumeRangeQuran.value / 10;
+    }
+  });
 
   quranData.forEach(({ name, src }, index) => {
     const button = document.createElement("button");
@@ -163,6 +154,16 @@ function createAudioButtons(quranData, quranButtonsElement) {
     button.textContent = name;
 
     button.addEventListener("click", () => {
+      // Stop the currently playing audio if the same button is clicked
+      if (currentAudio && currentIndex === index) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        button.style.backgroundColor = "#18181b"; // Reset button style
+        currentAudio = null;
+        currentIndex = -1;
+        return;
+      }
+
       // Stop the currently playing audio if a different button is clicked
       if (currentAudio) {
         currentAudio.pause();
@@ -185,6 +186,9 @@ function createAudioButtons(quranData, quranButtonsElement) {
   function playAudio(src, button) {
     currentAudio = new Audio(src);
 
+    // Set initial volume
+    currentAudio.volume = volumeRangeQuran.value / 10;
+
     // Handle audio playback error
     currentAudio.addEventListener("error", () => {
       console.error("Error loading audio file:", src);
@@ -197,16 +201,25 @@ function createAudioButtons(quranData, quranButtonsElement) {
     // Handle when the audio ends
     currentAudio.addEventListener("ended", () => {
       button.style.backgroundColor = "#18181b"; // Reset button style
-      currentIndex++;
 
-      // Check if there's a next audio to play
-      if (currentIndex < quranData.length) {
-        const nextSrc = quranData[currentIndex].src;
-        const nextButton = quranButtonsElement.children[currentIndex];
-        playAudio(nextSrc, nextButton); // Play the next audio
+      if (isRepeating) {
+        currentAudio.currentTime = 0;
+        currentAudio.play();
+        button.style.backgroundColor = "#0fa6e9";
       } else {
-        currentAudio = null;
-        currentIndex = -1; // Reset when the last audio ends
+        currentIndex++;
+
+        // Check if there's a next audio to play, or loop back to the first
+        if (currentIndex < quranData.length) {
+          const nextSrc = quranData[currentIndex].src;
+          const nextButton = quranButtonsElement.children[currentIndex];
+          playAudio(nextSrc, nextButton);
+        } else {
+          currentIndex = 0; // Reset to the first audio
+          const firstSrc = quranData[0].src;
+          const firstButton = quranButtonsElement.children[0];
+          playAudio(firstSrc, firstButton);
+        }
       }
     });
   }
