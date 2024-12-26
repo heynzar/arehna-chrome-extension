@@ -144,12 +144,45 @@ const sectionMapping = {
 const quranButtons = document.getElementById("quran-buttons");
 const soundsButtons = document.getElementById("sounds-buttons");
 
+let preferencesData = {
+  isSurahRepeating: false,
+  isHijriDate: false,
+  defaultSurah: 1,
+  backgroundImage:
+    "https://i.pinimg.com/736x/03/4b/b7/034bb7e5e3fb427fb82031191e2f16b9.jpg",
+};
+
 //Time - Date
 const timeElement = document.getElementById("time");
 const dateElement = document.getElementById("date");
 
 const volumeRangeQuran = document.getElementById("volume-range-quran");
 const volumeRangeSounds = document.getElementById("volume-range-sounds");
+
+//check
+const isHijriDateCheck = document.getElementById("isHijriDate");
+const isSurahRepeatingCheck = document.getElementById("isSurahRepeating");
+
+isHijriDateCheck.addEventListener("click", () => {
+  if (preferencesData.isHijriDate) {
+    isHijriDateCheck.classList.toggle("isChek");
+    preferencesData.isHijriDate = true;
+  } else {
+    isHijriDateCheck.classList.toggle("isChek");
+    preferencesData.isHijriDate = false;
+  }
+  console.log(preferencesData);
+});
+
+isSurahRepeatingCheck.addEventListener("click", () => {
+  if (preferencesData.isSurahRepeating) {
+    isSurahRepeatingCheck.classList.toggle("isChek");
+    preferencesData.isSurahRepeating = true;
+  } else {
+    isSurahRepeatingCheck.classList.toggle("isChek");
+    preferencesData.isSurahRepeating = false;
+  }
+});
 
 document.addEventListener("DOMContentLoaded", () => {
   setInterval(updateTime, 1000);
