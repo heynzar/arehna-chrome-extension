@@ -1,3 +1,4 @@
+//App Data
 const quran = [
   {
     name: "سورة البقرة",
@@ -36,67 +37,86 @@ const quran = [
     src: "https://server6.mp3quran.net/qtm/036.mp3",
   },
 ];
-
+// const sounds = [
+//   {
+//     icon: "bird-icon",
+//     src: "https://upbase.io/_assets/pomoup/1_Birds.mp3",
+//   },
+//   {
+//     icon: "coffee-icon",
+//     src: "https://upbase.io/_assets/pomoup/4_Coffee_Shop.mp3",
+//   },
+//   {
+//     icon: "rain-icon",
+//     src: "https://upbase.io/_assets/pomoup/2_Rain.mp3",
+//   },
+//   {
+//     icon: "lightning-icon",
+//     src: "https://upbase.io/_assets/pomoup/3_Thunder.mp3",
+//   },
+//   {
+//     icon: "dam-icon",
+//     src: "/audios/waterfall2.mp3",
+//   },
+//   {
+//     icon: "droplets-icon",
+//     src: "/audios/drops.mp3",
+//   },
+//   {
+//     icon: "flame-icon",
+//     src: "https://upbase.io/_assets/pomoup/6_Fire.mp3",
+//   },
+//   {
+//     icon: "waves-icon",
+//     src: "https://upbase.io/_assets/pomoup/8_Ocean_Waves.mp3",
+//   },
+//   {
+//     icon: "wind-icon",
+//     src: "/audios/wind2.mp3",
+//   },
+//   {
+//     icon: "moon-icon",
+//     src: "/audios/night2.mp3",
+//   },
+// ];
 const sounds = [
   {
-    icon: "bird-icon",
+    name: "🦜",
     src: "https://upbase.io/_assets/pomoup/1_Birds.mp3",
   },
   {
-    icon: "coffee-icon",
+    name: "☕",
     src: "https://upbase.io/_assets/pomoup/4_Coffee_Shop.mp3",
   },
   {
-    icon: "rain-icon",
+    name: "🌧",
     src: "https://upbase.io/_assets/pomoup/2_Rain.mp3",
   },
   {
-    icon: "lightning-icon",
+    name: "🌩",
     src: "https://upbase.io/_assets/pomoup/3_Thunder.mp3",
   },
   {
-    icon: "dam-icon",
-    src: "/audios/waterfall2.mp3",
+    name: "🏞",
+    src: "assets/audios/waterfall2.mp3",
   },
   {
-    icon: "droplets-icon",
-    src: "/audios/drops.mp3",
+    name: "💧",
+    src: "assets/audios/drops.mp3",
   },
   {
-    icon: "flame-icon",
+    name: "🔥",
     src: "https://upbase.io/_assets/pomoup/6_Fire.mp3",
   },
   {
-    icon: "waves-icon",
+    name: "🌊",
     src: "https://upbase.io/_assets/pomoup/8_Ocean_Waves.mp3",
   },
   {
-    icon: "wind-icon",
-    src: "/audios/wind2.mp3",
-  },
-  {
-    icon: "moon-icon",
-    src: "/audios/night2.mp3",
+    name: "🌙",
+    src: "assets/audios/night2.mp3",
   },
 ];
-
-//subSections
-const quranButtons = document.getElementById("quran-buttons");
-
-//Time - Date
-const timeElement = document.getElementById("time");
-const dateElement = document.getElementById("date");
-
-const volumeRangeQuran = document.getElementById("volume-range-quran");
-const volumeRangeSounds = document.getElementById("volume-range-sounds");
-
-document.addEventListener("DOMContentLoaded", () => {
-  setInterval(updateTime, 1000);
-  updateTime();
-  updateTimer();
-  createAudioButtons(quran, quranButtons);
-});
-
 const sectionMapping = {
   quran: {
     button: ".key__button_1",
@@ -119,6 +139,25 @@ const sectionMapping = {
     close: "x-info",
   },
 };
+
+//subSections
+const quranButtons = document.getElementById("quran-buttons");
+const soundsButtons = document.getElementById("sounds-buttons");
+
+//Time - Date
+const timeElement = document.getElementById("time");
+const dateElement = document.getElementById("date");
+
+const volumeRangeQuran = document.getElementById("volume-range-quran");
+const volumeRangeSounds = document.getElementById("volume-range-sounds");
+
+document.addEventListener("DOMContentLoaded", () => {
+  setInterval(updateTime, 1000);
+  updateTime();
+  updateTimer();
+  createAudioButtons(quran, quranButtons, volumeRangeQuran, true, false);
+  createAudioButtons(sounds, soundsButtons, volumeRangeSounds, true, true);
+});
 
 const showSection = (sectionId) => {
   document.getElementById(sectionId).classList.remove("hidden");
@@ -177,52 +216,82 @@ function updateTimer() {
 }
 
 function createAudioButtons(
-  quranData,
-  quranButtonsElement,
-  isRepeating = true
+  audioData,
+  audioButtonsElement,
+  volumeRange,
+  isRepeating = true,
+  isMultiplePlaying = false
 ) {
   let currentAudio = null; // To track the currently playing audio
   let currentIndex = -1; // To track the index of the currently playing audio
+  const activeAudios = new Map(); // To manage multiple playing audios
 
   // Initialize volume control
-  volumeRangeQuran.addEventListener("input", () => {
-    if (currentAudio) {
-      currentAudio.volume = volumeRangeQuran.value / 10;
+  volumeRange.addEventListener("input", () => {
+    const volume = volumeRange.value / 10;
+    if (isMultiplePlaying) {
+      // Adjust the volume of all active audios
+      activeAudios.forEach((audio) => {
+        audio.volume = volume;
+      });
+    } else if (currentAudio) {
+      currentAudio.volume = volume;
     }
   });
 
-  quranData.forEach(({ name, src }, index) => {
+  audioData.forEach(({ name, src }, index) => {
     const button = document.createElement("button");
-    button.classList.add("quran-button");
+    button.classList.add("audio-button");
     button.textContent = name;
 
     button.addEventListener("click", () => {
-      // Stop the currently playing audio if the same button is clicked
-      if (currentAudio && currentIndex === index) {
-        currentAudio.pause();
-        currentAudio.currentTime = 0;
-        button.style.backgroundColor = "#18181b"; // Reset button style
-        currentAudio = null;
-        currentIndex = -1;
-        return;
-      }
-
-      // Stop the currently playing audio if a different button is clicked
-      if (currentAudio) {
-        currentAudio.pause();
-        currentAudio.currentTime = 0;
-        const prevButton = quranButtonsElement.children[currentIndex];
-        if (prevButton) {
-          prevButton.style.backgroundColor = "#18181b"; // Reset previous button's style
+      if (isMultiplePlaying) {
+        // Handle multiple audios playing together
+        if (activeAudios.has(index)) {
+          const audioToStop = activeAudios.get(index);
+          audioToStop.pause();
+          audioToStop.currentTime = 0;
+          button.style.backgroundColor = "#18181b"; // Reset button style
+          activeAudios.delete(index);
+        } else {
+          const audioToPlay = new Audio(src);
+          audioToPlay.volume = volumeRange.value / 10;
+          audioToPlay.play();
+          audioToPlay.addEventListener("ended", () => {
+            button.style.backgroundColor = "#18181b"; // Reset button style
+            activeAudios.delete(index);
+          });
+          activeAudios.set(index, audioToPlay);
+          button.style.backgroundColor = "#0fa6e9"; // Highlight active button
         }
-      }
+      } else {
+        // Stop the currently playing audio if the same button is clicked
+        if (currentAudio && currentIndex === index) {
+          currentAudio.pause();
+          currentAudio.currentTime = 0;
+          button.style.backgroundColor = "#18181b"; // Reset button style
+          currentAudio = null;
+          currentIndex = -1;
+          return;
+        }
 
-      // Play the selected audio
-      currentIndex = index; // Update the current index
-      playAudio(src, button);
+        // Stop the currently playing audio if a different button is clicked
+        if (currentAudio) {
+          currentAudio.pause();
+          currentAudio.currentTime = 0;
+          const prevButton = audioButtonsElement.children[currentIndex];
+          if (prevButton) {
+            prevButton.style.backgroundColor = "#18181b"; // Reset previous button's style
+          }
+        }
+
+        // Play the selected audio
+        currentIndex = index; // Update the current index
+        playAudio(src, button);
+      }
     });
 
-    quranButtonsElement.appendChild(button);
+    audioButtonsElement.appendChild(button);
   });
 
   // Function to play audio and handle auto-playing the next audio
@@ -230,7 +299,7 @@ function createAudioButtons(
     currentAudio = new Audio(src);
 
     // Set initial volume
-    currentAudio.volume = volumeRangeQuran.value / 10;
+    currentAudio.volume = volumeRange.value / 10;
 
     // Handle audio playback error
     currentAudio.addEventListener("error", () => {
@@ -253,14 +322,14 @@ function createAudioButtons(
         currentIndex++;
 
         // Check if there's a next audio to play, or loop back to the first
-        if (currentIndex < quranData.length) {
-          const nextSrc = quranData[currentIndex].src;
-          const nextButton = quranButtonsElement.children[currentIndex];
+        if (currentIndex < audioData.length) {
+          const nextSrc = audioData[currentIndex].src;
+          const nextButton = audioButtonsElement.children[currentIndex];
           playAudio(nextSrc, nextButton);
         } else {
           currentIndex = 0; // Reset to the first audio
-          const firstSrc = quranData[0].src;
-          const firstButton = quranButtonsElement.children[0];
+          const firstSrc = audioData[0].src;
+          const firstButton = audioButtonsElement.children[0];
           playAudio(firstSrc, firstButton);
         }
       }
