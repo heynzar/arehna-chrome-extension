@@ -7,7 +7,7 @@
 }
 
 body {
-  background-image: url("https://i.pinimg.com/736x/03/4b/b7/034bb7e5e3fb427fb82031191e2f16b9.jpg");
+  background-image: url("https://coolbackgrounds.io/images/backgrounds/black/black-contour-f41038db.svg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -397,4 +397,17 @@ footer {
 #select-surah {
   background-color: black;
   color: white;
+}
+
+#info-footer {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0px 0px 0px;
+}
+
+#info-footer span,
+a {
+  font-size: 0.8rem;
 }
