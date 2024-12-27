@@ -388,3 +388,8 @@ footer {
   top: 20px;
   right: 14px;
 }
+
+#select-surah {
+  background-color: black;
+  color: white;
+}
