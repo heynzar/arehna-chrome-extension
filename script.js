@@ -185,10 +185,15 @@ isSurahRepeatingCheck.addEventListener("click", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  setInterval(updateTime, 1000);
-  updateTime();
+  setInterval(updateTime(preferencesData.isHijriDate), 1000);
   updateTimer();
-  createAudioButtons(quran, quranButtons, volumeRangeQuran, true, false);
+  createAudioButtons(
+    quran,
+    quranButtons,
+    volumeRangeQuran,
+    preferencesData.isSurahRepeating,
+    false
+  );
   createAudioButtons(sounds, soundsButtons, volumeRangeSounds, true, true);
 });
 
@@ -214,10 +219,23 @@ Object.values(sectionMapping).forEach(({ button, section, close }) => {
   }
 });
 
-function updateTime() {
+function updateTime(isHijriDate) {
   const now = new Date();
-  const options = { weekday: "short", day: "numeric", month: "short" };
-  dateElement.textContent = now.toLocaleDateString("en-US", options);
+  if (isHijriDate) {
+    const hijriOptions = {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+      calendar: "islamic",
+    };
+    dateElement.textContent = now.toLocaleDateString(
+      "en-US-u-ca-islamic",
+      hijriOptions
+    );
+  } else {
+    const options = { weekday: "short", day: "numeric", month: "short" };
+    dateElement.textContent = now.toLocaleDateString("en-US", options);
+  }
   timeElement.textContent = now.toLocaleTimeString("en-US", {
     hour12: false,
     hour: "2-digit",
@@ -252,8 +270,8 @@ function createAudioButtons(
   audioData,
   audioButtonsElement,
   volumeRange,
-  isRepeating = true,
-  isMultiplePlaying = false
+  isRepeating,
+  isMultiplePlaying
 ) {
   let currentAudio = null; // To track the currently playing audio
   let currentIndex = -1; // To track the index of the currently playing audio
