@@ -189,10 +189,33 @@ selectSurah.addEventListener("change", (event) => {
 
 const backgroundImageInput = document.getElementById("background-image-url");
 if (backgroundImageInput) {
+  // Change the input type to file
+  backgroundImageInput.type = "file";
+  // Add accept attribute to only allow image files
+  backgroundImageInput.accept = "image/*";
+
   backgroundImageInput.addEventListener("change", (event) => {
-    preferencesData.backgroundImage = event.target.value;
-    document.body.style.backgroundImage = `url(${preferencesData.backgroundImage})`;
-    console.log("Updated Preferences (Background Image):", preferencesData);
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        // e.target.result contains the data URL
+        preferencesData.backgroundImage = e.target.result;
+        document.body.style.backgroundImage = `url(${preferencesData.backgroundImage})`;
+        console.log(
+          "Updated Preferences (Background Image):",
+          "Image loaded successfully"
+        );
+      };
+
+      reader.onerror = function (error) {
+        console.error("Error reading file:", error);
+      };
+
+      // Read the file as a data URL
+      reader.readAsDataURL(file);
+    }
   });
 }
 
