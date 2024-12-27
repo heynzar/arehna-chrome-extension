@@ -191,6 +191,7 @@ const backgroundImageInput = document.getElementById("background-image-url");
 if (backgroundImageInput) {
   backgroundImageInput.addEventListener("change", (event) => {
     preferencesData.backgroundImage = event.target.value;
+    document.body.style.backgroundImage = `url(${preferencesData.backgroundImage})`;
     console.log("Updated Preferences (Background Image):", preferencesData);
   });
 }
@@ -285,15 +286,47 @@ function createAudioButtons(
   isRepeating,
   isMultiplePlaying
 ) {
-  let currentAudio = null; // To track the currently playing audio
-  let currentIndex = -1; // To track the index of the currently playing audio
-  const activeAudios = new Map(); // To manage multiple playing audios
+  let currentAudio = null;
+  let currentIndex = -1;
+  const activeAudios = new Map();
+  let isPlaying = true; // Add play/pause state variable
+
+  // Add space key event listener
+  document.addEventListener("keydown", (event) => {
+    if (event.code === "Space") {
+      event.preventDefault(); // Prevent space from scrolling the page
+      isPlaying = !isPlaying; // Toggle play state
+
+      if (isMultiplePlaying) {
+        // Handle multiple playing audios
+        if (isPlaying) {
+          // Resume all paused audios
+          activeAudios.forEach((audio) => {
+            audio.play();
+          });
+        } else {
+          // Pause all playing audios
+          activeAudios.forEach((audio) => {
+            audio.pause();
+          });
+        }
+      } else {
+        // Handle single audio
+        if (currentAudio) {
+          if (isPlaying) {
+            currentAudio.play();
+          } else {
+            currentAudio.pause();
+          }
+        }
+      }
+    }
+  });
 
   // Initialize volume control
   volumeRange.addEventListener("input", () => {
     const volume = volumeRange.value / 10;
     if (isMultiplePlaying) {
-      // Adjust the volume of all active audios
       activeAudios.forEach((audio) => {
         audio.volume = volume;
       });
@@ -309,47 +342,46 @@ function createAudioButtons(
 
     button.addEventListener("click", () => {
       if (isMultiplePlaying) {
-        // Handle multiple audios playing together
         if (activeAudios.has(index)) {
           const audioToStop = activeAudios.get(index);
           audioToStop.pause();
           audioToStop.currentTime = 0;
-          button.style.backgroundColor = "#18181b"; // Reset button style
+          button.style.backgroundColor = "#18181b";
           activeAudios.delete(index);
         } else {
           const audioToPlay = new Audio(src);
           audioToPlay.volume = volumeRange.value / 10;
-          audioToPlay.play();
+          if (isPlaying) {
+            // Only play if isPlaying is true
+            audioToPlay.play();
+          }
           audioToPlay.addEventListener("ended", () => {
-            button.style.backgroundColor = "#18181b"; // Reset button style
+            button.style.backgroundColor = "#18181b";
             activeAudios.delete(index);
           });
           activeAudios.set(index, audioToPlay);
-          button.style.backgroundColor = "#0fa6e9"; // Highlight active button
+          button.style.backgroundColor = "#0fa6e9";
         }
       } else {
-        // Stop the currently playing audio if the same button is clicked
         if (currentAudio && currentIndex === index) {
           currentAudio.pause();
           currentAudio.currentTime = 0;
-          button.style.backgroundColor = "#18181b"; // Reset button style
+          button.style.backgroundColor = "#18181b";
           currentAudio = null;
           currentIndex = -1;
           return;
         }
 
-        // Stop the currently playing audio if a different button is clicked
         if (currentAudio) {
           currentAudio.pause();
           currentAudio.currentTime = 0;
           const prevButton = audioButtonsElement.children[currentIndex];
           if (prevButton) {
-            prevButton.style.backgroundColor = "#18181b"; // Reset previous button's style
+            prevButton.style.backgroundColor = "#18181b";
           }
         }
 
-        // Play the selected audio
-        currentIndex = index; // Update the current index
+        currentIndex = index;
         playAudio(src, button);
       }
     });
@@ -357,40 +389,39 @@ function createAudioButtons(
     audioButtonsElement.appendChild(button);
   });
 
-  // Function to play audio and handle auto-playing the next audio
   function playAudio(src, button) {
     currentAudio = new Audio(src);
-
-    // Set initial volume
     currentAudio.volume = volumeRange.value / 10;
 
-    // Handle audio playback error
     currentAudio.addEventListener("error", () => {
       console.error("Error loading audio file:", src);
     });
 
-    // Play the audio
-    currentAudio.play();
+    if (isPlaying) {
+      // Only play if isPlaying is true
+      currentAudio.play();
+    }
     button.style.backgroundColor = "#0fa6e9";
 
-    // Handle when the audio ends
     currentAudio.addEventListener("ended", () => {
-      button.style.backgroundColor = "#18181b"; // Reset button style
+      button.style.backgroundColor = "#18181b";
 
       if (isRepeating) {
         currentAudio.currentTime = 0;
-        currentAudio.play();
+        if (isPlaying) {
+          // Only play if isPlaying is true
+          currentAudio.play();
+        }
         button.style.backgroundColor = "#0fa6e9";
       } else {
         currentIndex++;
 
-        // Check if there's a next audio to play, or loop back to the first
         if (currentIndex < audioData.length) {
           const nextSrc = audioData[currentIndex].src;
           const nextButton = audioButtonsElement.children[currentIndex];
           playAudio(nextSrc, nextButton);
         } else {
-          currentIndex = 0; // Reset to the first audio
+          currentIndex = 0;
           const firstSrc = audioData[0].src;
           const firstButton = audioButtonsElement.children[0];
           playAudio(firstSrc, firstButton);
