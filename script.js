@@ -312,7 +312,7 @@ function createAudioButtons(
   let currentAudio = null;
   let currentIndex = -1;
   const activeAudios = new Map();
-  let isPlaying = true; // Add play/pause state variable
+  let isPlaying = true;
 
   // Add space key event listener
   document.addEventListener("keydown", (event) => {

@@ -6,7 +6,7 @@ A peaceful Chrome extension that combines natural sounds with beautiful Quran re
 
 🚀 **[Live Demo Here](https://arehna.nzar.dev/)**
 
-[![Project Preview](/public/cover.png)](https://arehna.nzar.dev/)
+[![Project Preview](/assets/cover.jpg)](https://arehna.nzar.dev/)
 
 ---
 
@@ -57,10 +57,10 @@ This is meant to replace your usual way of listening to things. It gives you a p
 
 ## 🛠 Built With
 
-- [![JavaScript][JavaScript]]
-- [![HTML][html]]
-- [![CSS][css]]
-- [![Chrome Extensions API][chrome]]
+- ![JavaScript][JavaScript]
+- ![HTML][html]
+- ![CSS][css]
+- ![Chrome Extensions API][chrome]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
