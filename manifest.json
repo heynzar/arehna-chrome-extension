@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Arehna - Your Calm Companion",
   "version": "1.0.1",
-  "description": "Find tranquility through a blend of natural sounds and Quranic recitations. Transform your browser into a peaceful sanctuary with handpicked Quran verses and calming nature sounds. Features customizable backgrounds, Hijri date display, and intuitive keyboard shortcuts.",
+  "description": "Experience tranquility with nature sounds, Quran recitations, Hijri date, and customizable backgrounds.",
   "icons": {
     "16": "assets/icons/icon-16.png",
     "32": "assets/icons/icon-32.png",
@@ -17,10 +17,5 @@
       "48": "assets/icons/icon-48.png",
       "128": "assets/icons/icon-128.png"
     }
-  },
-  "permissions": ["storage"],
-  "background": {
-    "service_worker": "script.js",
-    "type": "module"
   }
 }

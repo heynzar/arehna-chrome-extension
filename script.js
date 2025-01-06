@@ -37,48 +37,7 @@ const quran = [
     src: "https://server6.mp3quran.net/qtm/036.mp3",
   },
 ];
-// const sounds = [
-//   {
-//     icon: "bird-icon",
-//     src: "https://upbase.io/_assets/pomoup/1_Birds.mp3",
-//   },
-//   {
-//     icon: "coffee-icon",
-//     src: "https://upbase.io/_assets/pomoup/4_Coffee_Shop.mp3",
-//   },
-//   {
-//     icon: "rain-icon",
-//     src: "https://upbase.io/_assets/pomoup/2_Rain.mp3",
-//   },
-//   {
-//     icon: "lightning-icon",
-//     src: "https://upbase.io/_assets/pomoup/3_Thunder.mp3",
-//   },
-//   {
-//     icon: "dam-icon",
-//     src: "/audios/waterfall2.mp3",
-//   },
-//   {
-//     icon: "droplets-icon",
-//     src: "/audios/drops.mp3",
-//   },
-//   {
-//     icon: "flame-icon",
-//     src: "https://upbase.io/_assets/pomoup/6_Fire.mp3",
-//   },
-//   {
-//     icon: "waves-icon",
-//     src: "https://upbase.io/_assets/pomoup/8_Ocean_Waves.mp3",
-//   },
-//   {
-//     icon: "wind-icon",
-//     src: "/audios/wind2.mp3",
-//   },
-//   {
-//     icon: "moon-icon",
-//     src: "/audios/night2.mp3",
-//   },
-// ];
+
 const sounds = [
   {
     name: "🦜",
@@ -152,31 +111,43 @@ const dateElement = document.getElementById("date");
 const volumeRangeQuran = document.getElementById("volume-range-quran");
 const volumeRangeSounds = document.getElementById("volume-range-sounds");
 
-let preferencesData = {
+let preferencesData = JSON.parse(localStorage.getItem("preferencesData")) || {
   isSurahRepeating: false,
   isHijriDate: false,
   defaultSurah: 1,
-  backgroundImage:
-    "https://i.pinimg.com/736x/03/4b/b7/034bb7e5e3fb427fb82031191e2f16b9.jpg",
+  backgroundImage: "/assets/images/bg1.jpeg",
+  timer: { hours: 0, minutes: 0, seconds: 0 },
 };
 
-const selectSurah = document.getElementById("select-surah");
-quran.forEach(({ name }, index) => {
-  const option = document.createElement("option");
-  option.textContent = name;
-  option.value = index + 1;
-  selectSurah.appendChild(option);
-});
+function savePreferences() {
+  localStorage.setItem("preferencesData", JSON.stringify(preferencesData));
+}
+
+function loadPreferences() {
+  document.body.style.backgroundImage = `url(${preferencesData.backgroundImage})`;
+  isHijriDateCheck.classList.toggle("isChek", preferencesData.isHijriDate);
+  isSurahRepeatingCheck.classList.toggle(
+    "isChek",
+    preferencesData.isSurahRepeating
+  );
+  selectSurah.value = preferencesData.defaultSurah;
+}
 
 const isHijriDateCheck = document.getElementById("isHijriDate");
+const isSurahRepeatingCheck = document.getElementById("isSurahRepeating");
+const selectSurah = document.getElementById("select-surah");
+const backgroundImageInput = document.getElementById("background-image-url");
+
+// Event listeners for preferences
 isHijriDateCheck.addEventListener("click", () => {
   preferencesData.isHijriDate = !preferencesData.isHijriDate;
+  savePreferences();
   isHijriDateCheck.classList.toggle("isChek", preferencesData.isHijriDate);
 });
 
-const isSurahRepeatingCheck = document.getElementById("isSurahRepeating");
 isSurahRepeatingCheck.addEventListener("click", () => {
   preferencesData.isSurahRepeating = !preferencesData.isSurahRepeating;
+  savePreferences();
   isSurahRepeatingCheck.classList.toggle(
     "isChek",
     preferencesData.isSurahRepeating
@@ -185,44 +156,37 @@ isSurahRepeatingCheck.addEventListener("click", () => {
 
 selectSurah.addEventListener("change", (event) => {
   preferencesData.defaultSurah = parseInt(event.target.value, 10);
+  savePreferences();
 });
 
-const backgroundImageInput = document.getElementById("background-image-url");
-if (backgroundImageInput) {
-  // Change the input type to file
-  backgroundImageInput.type = "file";
-  // Add accept attribute to only allow image files
-  backgroundImageInput.accept = "image/*";
+const backgroundImages = document.querySelectorAll(".background img");
 
-  backgroundImageInput.addEventListener("change", (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-
-      reader.onload = function (e) {
-        // e.target.result contains the data URL
-        preferencesData.backgroundImage = e.target.result;
-        document.body.style.backgroundImage = `url(${preferencesData.backgroundImage})`;
-        console.log(
-          "Updated Preferences (Background Image):",
-          "Image loaded successfully"
-        );
-      };
-
-      reader.onerror = function (error) {
-        console.error("Error reading file:", error);
-      };
-
-      // Read the file as a data URL
-      reader.readAsDataURL(file);
-    }
+backgroundImages.forEach((image) => {
+  image.addEventListener("click", (event) => {
+    const selectedImageUrl = event.target.src;
+    document.body.style.backgroundImage = `url(${selectedImageUrl})`;
+    savePreferences();
   });
-}
+});
+
+backgroundImageInput.addEventListener("change", (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      preferencesData.backgroundImage = e.target.result;
+      document.body.style.backgroundImage = `url(${preferencesData.backgroundImage})`;
+      savePreferences();
+    };
+    reader.readAsDataURL(file);
+  }
+});
 
 document.addEventListener("DOMContentLoaded", () => {
+  loadPreferences();
+  updateTimer();
   setInterval(() => updateTime(preferencesData.isHijriDate), 1000);
   updateTime(preferencesData.isHijriDate);
-  updateTimer();
   createAudioButtons(
     quran,
     quranButtons,
@@ -279,26 +243,26 @@ function updateTime(isHijriDate) {
   });
 }
 
+// Timer update and persistence
 function updateTimer() {
-  let sec = 0;
-  let min = 0;
-  let hur = 0;
-
-  setInterval(() => {
-    sec++;
-    if (sec >= 60) {
-      sec = 0;
-      min++;
+  const { hours, minutes, seconds } = preferencesData.timer;
+  let timerInterval = setInterval(() => {
+    preferencesData.timer.seconds++;
+    if (preferencesData.timer.seconds >= 60) {
+      preferencesData.timer.seconds = 0;
+      preferencesData.timer.minutes++;
     }
-    if (min >= 60) {
-      min = 0;
-      hur++;
+    if (preferencesData.timer.minutes >= 60) {
+      preferencesData.timer.minutes = 0;
+      preferencesData.timer.hours++;
     }
-    document.getElementById("timer").textContent = `${hur
-      .toString()
-      .padStart(2, "0")}:${min.toString().padStart(2, "0")}:${sec
-      .toString()
-      .padStart(2, "0")}`;
+    document.getElementById("timer").textContent = `${String(
+      preferencesData.timer.hours
+    ).padStart(2, "0")}:${String(preferencesData.timer.minutes).padStart(
+      2,
+      "0"
+    )}:${String(preferencesData.timer.seconds).padStart(2, "0")}`;
+    savePreferences();
   }, 1000);
 }
 
